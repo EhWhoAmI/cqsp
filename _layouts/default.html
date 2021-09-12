@@ -40,11 +40,14 @@
         {% endif %}
         <div>
         <h3>Navigation</h3>
-        <ul>
-          <li><a class="view" href="/media.html">Media</a></li>
-          <li><a class="view" href="/features.html">Features</a></li>
-          <li><a class="view" href="/community.html">Community</a></li>
-          <li><a class="view" href="/about.html">About</a></li>
+          <ul>
+            {% for item in site.data.navigation.items %}
+            <li>
+            <a href="{{ site.baseurl }}{{ item.link }}">
+              {{ item.name }}
+            </a>
+            </li>
+          {% endfor %}
         </ul>
         <h3>News</h3>
         <ul>
