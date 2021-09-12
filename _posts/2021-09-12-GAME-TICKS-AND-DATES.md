@@ -3,6 +3,7 @@ layout: post
 title: "Ticks and dates"
 date: 2021-09-11
 categories: ["dev-diary"]
+tags: ["dev-diary"]
 author: EhWhoAmI
 ---
 A StarDate holds and calculates the tick that is on going. The tick is the number of hours that has been
