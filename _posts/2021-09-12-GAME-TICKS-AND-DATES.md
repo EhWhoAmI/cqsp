@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Ticks and dates"
-date: 2021-09-11
+date: 2021-09-12
 categories: ["dev-diary"]
 tags: ["dev-diary"]
 author: EhWhoAmI
