@@ -24,18 +24,18 @@
         <p>{{ site.description | default: site.github.project_tagline }}</p>
 
         {% if site.github.is_project_page %}
-        <p class="view"><a href="{{ site.github.repository_url }}">View the Project on GitHub <small>{{ site.github.repository_nwo }}</small></a></p>
+        <p class="view"><a href="{{ site.github.repository_url }}" class="uilink">View the Project on GitHub <small>{{ site.github.repository_nwo }}</small></a></p>
         {% endif %}
 
         {% if site.github.is_user_page %}
-        <p class="view"><a href="{{ site.github.owner_url }}">View My GitHub Profile</a></p>
+        <p class="view"><a href="{{ site.github.owner_url }}" class="uilink">View My GitHub Profile</a></p>
         {% endif %}
 
         {% if site.show_downloads %}
         <ul class="downloads">
-          <li><a href="{{ site.github.latest_release }}">Download <strong>Release</strong></a></li>
-          <li><a href="{{ site.github.repository_url }}">View On <strong>GitHub</strong></a></li>
-          <li><a href="{{ site.github.wiki_url }}">View <strong>Wiki</strong></a></li>
+          <li><a href="{{ site.github.latest_release }}" class="uilink">Download <strong>Release</strong></a></li>
+          <li><a href="{{ site.github.repository_url }}" class="uilink">View On <strong>GitHub</strong></a></li>
+          <li><a href="{{ site.github.wiki_url }}" class="uilink">View <strong>Wiki</strong></a></li>
         </ul>
         {% endif %}
         <div>
@@ -43,7 +43,7 @@
           <ul>
             {% for item in site.data.navigation.items %}
             <li>
-            <a href="{{ site.baseurl }}{{ item.link }}">
+            <a href="{{ site.baseurl }}{{ item.link }}" class="uilink">
               {{ item.name }}
             </a>
             </li>
@@ -53,7 +53,7 @@
         <ul>
           {% for post in site.posts limit:10 %}
             <li>
-              <a href="{{ post.url }}">{{ post.title }}</a>
+              <a href="{{ post.url }}" class="uilink">{{ post.title }}</a>
             </li>
           {% endfor %}
         </ul>
