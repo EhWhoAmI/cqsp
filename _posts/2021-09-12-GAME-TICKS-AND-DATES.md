@@ -5,6 +5,7 @@ date: 2021-09-12
 categories: ["dev-diary"]
 tags: ["dev-diary"]
 author: EhWhoAmI
+excerpt: Information about how Stardate and ticks operate.
 ---
 A StarDate holds and calculates the tick that is on going. The tick is the number of hours that has been
 ongoing since the start of the day. Here is some rough thinking for what interval things
