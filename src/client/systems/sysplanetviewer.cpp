@@ -89,6 +89,12 @@ void cqsp::client::systems::SysPlanetInformation::Init() {}
 
 void cqsp::client::systems::SysPlanetInformation::DoUI(int delta_time) {
     DisplayPlanet();
+
+    if (market_window) {
+        ImGui::Begin(fmt::format("Market information for {}", selected_planet).c_str(), &market_window);
+        MarketInformationTooltipContent();
+        ImGui::End();
+    }
 }
 
 void cqsp::client::systems::SysPlanetInformation::DoUpdate(int delta_time) {
@@ -173,7 +179,9 @@ void cqsp::client::systems::SysPlanetInformation::PlanetInformationPanel() {
                                         window_flags);
     // Market
     if (GetUniverse().all_of<cqspc::MarketCenter>(selected_planet)) {
-        ImGui::Text("Is market center");
+        if (ImGui::SmallButton("Is market center")) {
+            market_window = !market_window;
+        }
         if (ImGui::IsItemHovered()) {
             ImGui::BeginTooltip();
             MarketInformationTooltipContent();
@@ -398,6 +406,27 @@ void cqsp::client::systems::SysPlanetInformation::DemographicsTab() {
             auto& wallet = GetUniverse().get<cqspc::Wallet>(seg_entity);
             ImGui::TextFmt("Spending: {}", cqsp::util::LongToHumanString(wallet.GetGDPChange()));
         }
+        // Get demand
+        ImGui::Text("Consumption");
+        if (GetUniverse().any_of<cqspc::ResourceConsumption>(seg_entity)) {
+            auto& consumption = GetUniverse().get<cqspc::ResourceConsumption>(seg_entity);
+            if (ImGui::BeginTable("goodconsumptiontable", 2,
+                    ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+                ImGui::TableSetupColumn("Good");
+                ImGui::TableSetupColumn("Amount");
+                ImGui::TableHeadersRow();
+                for (auto& price : consumption) {
+                    ImGui::TableNextRow();
+                    ImGui::TableSetColumnIndex(0);
+                    ImGui::TextFmt("{}", GetUniverse().get<cqspc::Identifier>(
+                                             price.first));
+                    ImGui::TableSetColumnIndex(1);
+                    ImGui::TextFmt("{}", price.second);
+                }
+                ImGui::EndTable();
+            }
+        }
+        ImGui::Separator();
     }
     // Then do demand and other things.
 }

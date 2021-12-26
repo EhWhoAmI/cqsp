@@ -48,6 +48,7 @@ void SysWalletReset::DoSystem() {
 void SysCommercialProcess::DoSystem() {
     ZoneScoped;
     namespace cqspc = cqsp::common::components;
+
     auto view = GetUniverse().view<cqspc::Commercial>();
     for (entt::entity entity : view) {
         // If it's a commercial area, add employing things
@@ -141,7 +142,6 @@ void SysResourceConsumptionHandler::DoSystem() {
     // Demand for next time
     for (auto entity : view) {
         auto& consumption = GetUniverse().get<cqspc::ResourceConsumption>(entity);
-        //auto& participant = GetUniverse().get<cqspc::MarketAgent>(entity);
         float productivity = 1;
         if (GetUniverse().all_of<cqspc::FactoryProductivity>(entity)) {
             productivity = GetUniverse().get<cqspc::FactoryProductivity>(entity).current_production;
@@ -244,8 +244,7 @@ void SysDemandResolver::DoSystem() {
         auto& market = GetUniverse().get<cqspc::Market>(market_participant.market);
         // Add to demand
         market.demand += demand;
-        auto& market_stockpile =
-            GetUniverse().get<cqspc::ResourceStockpile>(market_participant.market);
+        auto& market_stockpile = GetUniverse().get<cqspc::ResourceStockpile>(market_participant.market);
 
         // Check if it can handle it, and transfer resources on success
         if (market_stockpile.EnoughToTransfer(demand)) {
@@ -295,14 +294,14 @@ void SysProductionStarter::DoSystem() {
             productivity = GetUniverse().get<cqspc::FactoryProductivity>(entity).current_production;
         }
         // Check if there are enough people working
-        if (GetUniverse().all_of<cqspc::Employer>(entity)) {
+        /*if (GetUniverse().all_of<cqspc::Employer>(entity)) {
             auto& employer = GetUniverse().get<cqspc::Employer>(entity);
             if (employer.population_needed > employer.population_fufilled) {
                 // Then not enough people, and then it cannot work
                 GetUniverse().get_or_emplace<cqspc::FailedResourceProduction>(entity);
                 continue;
             }
-        }
+        }*/
 
         // Wanted resources:
         cqspc::ResourceLedger stockpile_calc;

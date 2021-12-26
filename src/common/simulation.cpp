@@ -48,29 +48,30 @@ cqsp::common::systems::simulation::Simulation::Simulation(
     namespace cqspcs = cqsp::common::systems;
     AddSystem<cqspcs::SysScript>();
     AddSystem<cqspcs::InfrastructureSim>();
-    AddSystem<cqspcs::SysPopulationGrowth>();
+    //AddSystem<cqspcs::SysPopulationGrowth>();
     AddSystem<cqspcs::SysPopulationConsumption>();
 
-    // Employment other stuff
+    // Employment and other stuff
     AddSystem<cqspcs::SysWalletReset>();
-    AddSystem<cqspcs::SysCommercialProcess>();
+    //AddSystem<cqspcs::SysCommercialProcess>();
     AddSystem<cqspcs::SysEmploymentHandler>();
 
-    // Create Production
+    // Generate resources
     AddSystem<cqspcs::SysResourceGenerator>();
     AddSystem<cqspcs::SysProduction>();
-    AddSystem<cqspcs::SysResourceConsumptionHandler>();
-    AddSystem<cqspcs::SysRecipeDemandCreator>();
+
+    AddSystem<cqspcs::SysResourceConsumptionHandler>();  // Create demand
+    AddSystem<cqspcs::SysRecipeDemandCreator>();  // Create demand
 
     // Market simulation
     AddSystem<cqspcs::SysGoodSeller>();
     AddSystem<cqspcs::SysPriceDetermine>();
     AddSystem<cqspcs::SysDemandResolver>();
 
-    // Adjust price
-    //AddSystem<cqspcs::SysFactory>();
+    // Adjust production
+    AddSystem<cqspcs::SysFactory>();
 
-    // Create
+    // Create production
     AddSystem<cqspcs::SysConsumptionConsume>();
     AddSystem<cqspcs::SysProductionStarter>();
 

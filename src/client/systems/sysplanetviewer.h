@@ -63,6 +63,7 @@ class SysPlanetInformation : public SysUserInterface {
     bool factory_list_panel = false;
     bool power_plant_output_panel = false;
     entt::entity power_plant_changing;
+    bool market_window = false;
 };
 }  // namespace systems
 }  // namespace client

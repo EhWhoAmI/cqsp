@@ -87,14 +87,19 @@ void cqsp::common::systems::SysFactory::SysMineProduction(Universe& universe) {
                 // and also take into account how large the S/D ratio is, so that they can
                 // drastically or minimally change the price of the good as needed.
                 produce.current_production *= 0.9;
+                if (produce.current_production > produce.max_production) {
+                    produce.current_production = produce.max_production;
+                }
             } else if (sd_ratio < 1) {
+                // We can also shut down the mine
                 // Then increase production due to the high demand
                 double& prod = produce.current_production;
                 // If productivity is close to zero, then multiply it by a factor of it's maximum capicity
                 if (prod >= -0.01 && prod <= 0.01) {
                     prod = produce.max_production * 0.1;
+                } else {
+                    prod *= 1.1;
                 }
-                prod *= 1.1;
             }
         }
     }

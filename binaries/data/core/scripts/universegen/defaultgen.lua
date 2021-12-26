@@ -131,11 +131,11 @@ generators:insert({
         -- Add city
         -- TODO(EhWhoAmI): Create more complex economy, with cities specializing in stuff
         -- TODO(EhWhoAmI): Make slider for configuring the amount of cities and stuff
-        local city_count = 2
+        local city_count = 1
         for index = 1, city_count, 1 do
             local city = add_planet_settlement(planet, random(-90, 90), random(-180, 180))
             set_name(city, "City ".. index)
-            local pop_unit = add_population_segment(city, random_normal_int(50000000, 2000000)) -- 100 million
+            local pop_unit = add_population_segment(city, 100000)--random_normal_int(50000000, 2000000)) -- 100 million
             add_cash(pop_unit, 1000000000) -- 1 billion
             attach_market(market, pop_unit)
             -- Add industry
@@ -148,16 +148,16 @@ generators:insert({
             -- 95% of cities should have a population under 53919928, so we'd calculate for that
             -- 53919928 * 2.31525 / 2 (for the recipe) = 62419056.651
 
-            place_factory_on_market(market, city, "consumer_good_manufacturing", 62419056.651)
+            place_factory_on_market(market, city, "consumer_good_manufacturing", 10000)
 
             -- Steel needed
-            place_factory_on_market(market, city, "steel_forging", 62419056.651)
+            place_factory_on_market(market, city, "steel_forging", 10000)
             -- place_factory_on_market(market, city, "concrete_manufacturing", 300)
-            attach_market(market, create_mine(city, goods["copper"], 1, 10000))
-            attach_market(market, create_mine(city, goods["aluminium"], 1, 10000))
-            attach_market(market, create_mine(city, goods["stone"], 1, 10000))
-            attach_market(market, create_mine(city, goods["iron"], 1, 374514340))
-            attach_market(market, create_mine(city, goods["oil"], 1, 50000))
+            --attach_market(market, create_mine(city, goods["copper"], 1, 10000))
+            --attach_market(market, create_mine(city, goods["aluminium"], 1, 10000))
+            --attach_market(market, create_mine(city, goods["stone"], 1, 10000))
+            attach_market(market, create_mine(city, goods["iron"], 1, 20000))
+            --attach_market(market, create_mine(city, goods["oil"], 1, 50000))
             add_power_plant(city, 1000)
         end
     end

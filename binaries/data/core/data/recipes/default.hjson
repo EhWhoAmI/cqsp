@@ -5,10 +5,10 @@
     {
         identifier: steel_forging
         input: {
-            iron: 3
+            iron: 2
         }
         output: {
-            steel: 2
+            steel: 1
         }
         catalyst: {
         }
@@ -20,11 +20,10 @@
     {
         identifier: consumer_good_manufacturing
         input: {
-            iron: 3
-            steel: 2
+            steel: 1
         }
         output: {
-            consumer_good: 2
+            consumer_good: 1
         }
         catalyst: {
         }

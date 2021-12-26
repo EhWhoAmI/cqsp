@@ -70,7 +70,7 @@ void cqsp::common::systems::SysPopulationConsumption::DoSystem() {
         // it yet. Since all things have to be thrown away, we'd have to assume that the generation of consumer
         // goods is the same as the consumption of consumer goods.
         // 4.9 pounds is roughly equal to 2.2226 kg, and divide it by 24 to get per tick, equals to 0.0926083333kg.
-        uint64_t consumption = segment.population * 0.09261;
+        uint64_t consumption = segment.population * 0.1;
         universe.get_or_emplace<cqspc::ResourceConsumption>(entity)[good] = consumption;
     }
 }
