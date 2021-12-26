@@ -59,8 +59,8 @@ cqsp::common::systems::simulation::Simulation::Simulation(
     // Create Production
     AddSystem<cqspcs::SysResourceGenerator>();
     AddSystem<cqspcs::SysProduction>();
-    AddSystem<cqspcs::SysDemandCreator>();
-    AddSystem<cqspcs::SysFactoryDemandCreator>();
+    AddSystem<cqspcs::SysResourceConsumptionHandler>();
+    AddSystem<cqspcs::SysRecipeDemandCreator>();
 
     // Market simulation
     AddSystem<cqspcs::SysGoodSeller>();

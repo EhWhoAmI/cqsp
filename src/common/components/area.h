@@ -25,8 +25,10 @@ struct Industry {
     std::vector<entt::entity> industries;
 };
 
+/// <summary>
+/// Factory produced the last economic tick
+/// </summary>
 struct Production {
-    float amount;
 };
 
 struct Factory {};

@@ -117,7 +117,9 @@ void SysProduction::DoSystem() {
     namespace cqspc = cqsp::common::components;
     auto view = GetUniverse().view<cqspc::Production, cqspc::ResourceConverter, cqspc::ResourceStockpile>();
     SPDLOG_TRACE("Creating resources for {} factories", view.size_hint());
-    for (auto [entity, production, converter, stockpile] : view.each()) {
+    for (entt::entity entity : view) {
+        auto& converter = GetUniverse().get<cqspc::ResourceConverter>(entity);
+        auto& stockpile = GetUniverse().get<cqspc::ResourceStockpile>(entity);
         // Make the resources, and dump to market
         auto& recipe = GetUniverse().get<cqspc::Recipe>(converter.recipe);
         // resources generated:
@@ -131,7 +133,7 @@ void SysProduction::DoSystem() {
     }
 }
 
-void SysDemandCreator::DoSystem() {
+void SysResourceConsumptionHandler::DoSystem() {
     ZoneScoped;
     namespace cqspc = cqsp::common::components;
     auto view = GetUniverse().view<cqspc::ResourceConsumption, cqspc::MarketAgent>();
@@ -139,17 +141,17 @@ void SysDemandCreator::DoSystem() {
     // Demand for next time
     for (auto entity : view) {
         auto& consumption = GetUniverse().get<cqspc::ResourceConsumption>(entity);
-        auto& participant = GetUniverse().get<cqspc::MarketAgent>(entity);
+        //auto& participant = GetUniverse().get<cqspc::MarketAgent>(entity);
         float productivity = 1;
         if (GetUniverse().all_of<cqspc::FactoryProductivity>(entity)) {
             productivity = GetUniverse().get<cqspc::FactoryProductivity>(entity).current_production;
         }
-        auto& demand = GetUniverse().emplace_or_replace<cqspc::ResourceDemand>(entity);
+        auto& demand = GetUniverse().get_or_emplace<cqspc::ResourceDemand>(entity);
         demand.MultiplyAdd(consumption, productivity * Interval());
     }
 }
 
-void SysFactoryDemandCreator::DoSystem() {
+void SysRecipeDemandCreator::DoSystem() {
     ZoneScoped;
     namespace cqspc = cqsp::common::components;
     auto view = GetUniverse().view<cqspc::ResourceConverter, cqspc::MarketAgent>();
@@ -157,7 +159,7 @@ void SysFactoryDemandCreator::DoSystem() {
     // Demand for next time
     for (auto entity : view) {
         auto& converter = GetUniverse().get<cqspc::ResourceConverter>(entity);
-        auto& participant = GetUniverse().get<cqspc::MarketAgent>(entity);
+        //auto& participant = GetUniverse().get<cqspc::MarketAgent>(entity);
         auto& recipe = GetUniverse().get<cqspc::Recipe>(converter.recipe);
 
         float productivity = 1;
@@ -165,7 +167,7 @@ void SysFactoryDemandCreator::DoSystem() {
             productivity =
                 GetUniverse().get<cqspc::FactoryProductivity>(entity).current_production;
         }
-        auto& demand = GetUniverse().emplace<cqspc::ResourceDemand>(entity);
+        auto& demand = GetUniverse().get_or_emplace<cqspc::ResourceDemand>(entity);
         demand.MultiplyAdd(recipe.input, productivity * Interval());
     }
 }
@@ -179,17 +181,13 @@ void SysGoodSeller::DoSystem() {
     SPDLOG_TRACE("Selling for {} stockpiles", view.size_hint());
     // Demand for next time
     for (auto [entity, stockpile, market_participant] : view.each()) {
-        // auto& market =
-        // GetUniverse().get<cqspc::Market>(market_participant.market);
         // Add to supply
-        auto& market_stockpile =
-            GetUniverse().get<cqspc::ResourceStockpile>(market_participant.market);
+        auto& market_stockpile = GetUniverse().get<cqspc::ResourceStockpile>(market_participant.market);
         market_stockpile += stockpile;
         auto& market = GetUniverse().get<cqspc::Market>(market_participant.market);
         // Sell goods
         // Adjust wallet
-        GetUniverse().get<cqspc::Wallet>(entity) +=
-            stockpile.MultiplyAndGetSum(market.prices);
+        GetUniverse().get<cqspc::Wallet>(entity) += stockpile.MultiplyAndGetSum(market.prices);
         stockpile.clear();
     }
 }
@@ -260,18 +258,18 @@ void SysDemandResolver::DoSystem() {
             double cost = demand.MultiplyAndGetSum(market.prices);
             if (cost > balance) {
                 // Failed transaction
-                // GetUniverse().emplace_or_replace<cqspc::FailedResourceTransfer>(entity);
+                GetUniverse().emplace_or_replace<cqspc::FailedResourceTransfer>(entity);
+                /*
                 // Try to buy the maximum available
                 // Get ratio of the things, multiply by price, and then
                 demand *= (balance / cost);
                 cost = demand.MultiplyAndGetSum(market.prices);
                 balance = 0;
-                market_stockpile.TransferTo(
-                    GetUniverse().get<cqspc::ResourceStockpile>(entity), demand);
+                market_stockpile.TransferTo(GetUniverse().get<cqspc::ResourceStockpile>(entity), demand);
+                */
             } else {
                 balance -= demand.MultiplyAndGetSum(market.prices);
-                market_stockpile.TransferTo(
-                    GetUniverse().get<cqspc::ResourceStockpile>(entity), demand);
+                market_stockpile.TransferTo(GetUniverse().get<cqspc::ResourceStockpile>(entity), demand);
             }
         } else {
             // Failed due to not enough resources in the market,

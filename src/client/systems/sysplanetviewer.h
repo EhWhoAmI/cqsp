@@ -24,7 +24,6 @@
 namespace cqsp {
 namespace client {
 namespace systems {
-
 class SysPlanetInformation : public SysUserInterface {
  public:
     explicit SysPlanetInformation(cqsp::engine::Application& app) : SysUserInterface(app) {}

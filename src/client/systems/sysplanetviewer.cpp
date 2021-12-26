@@ -290,6 +290,7 @@ void cqsp::client::systems::SysPlanetInformation::IndustryTabManufacturingChild(
     cqspc::ResourceLedger input_resources;
     cqspc::ResourceLedger output_resources;
     double GDP_calculation = 0;
+    double wealth_calculation = 0;
     int count = 0;
     for (auto industry : city_industry.industries) {
         if (GetUniverse().all_of<cqspc::ResourceConverter, cqspc::Factory>(industry)) {
@@ -306,10 +307,12 @@ void cqsp::client::systems::SysPlanetInformation::IndustryTabManufacturingChild(
             output_resources.MultiplyAdd(recipe.output, productivity);
             if (GetUniverse().all_of<cqspc::Wallet>(industry)) {
                 GDP_calculation += GetUniverse().get<cqspc::Wallet>(industry).GetGDPChange();
+                wealth_calculation += GetUniverse().get<cqspc::Wallet>(industry).GetBalance();
             }
         }
     }
     ImGui::TextFmt("GDP: {}", cqsp::util::LongToHumanString(GDP_calculation));
+    ImGui::TextFmt("Wealth: {}", cqsp::util::LongToHumanString(wealth_calculation));
     ImGui::TextFmt("Factories: {}", count);
 
     ImGui::SameLine();
@@ -332,6 +335,7 @@ void cqsp::client::systems::SysPlanetInformation::IndustryTabMiningChild() {
     // Get what resources they are making
     cqspc::ResourceLedger resources;
     double GDP_calculation = 0;
+    double wealth_calculation = 0;
     int mine_count = 0;
     for (auto mine : city_industry.industries) {
         if (GetUniverse().all_of<cqspc::ResourceGenerator, cqspc::Mine>(mine)) {
@@ -345,10 +349,12 @@ void cqsp::client::systems::SysPlanetInformation::IndustryTabMiningChild() {
             mine_count++;
             if (GetUniverse().all_of<cqspc::Wallet>(mine)) {
                 GDP_calculation += GetUniverse().get<cqspc::Wallet>(mine).GetGDPChange();
+                wealth_calculation += GetUniverse().get<cqspc::Wallet>(mine).GetBalance();
             }
         }
     }
     ImGui::TextFmt("GDP: {}", cqsp::util::LongToHumanString(GDP_calculation));
+    ImGui::TextFmt("Wealth: {}", cqsp::util::LongToHumanString(wealth_calculation));
     ImGui::TextFmt("Mines: {}", mine_count);
 
     ImGui::SameLine();
