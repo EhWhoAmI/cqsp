@@ -89,6 +89,19 @@ bool MergeCompare(const ResourceLedger &m1, const ResourceLedger&m2,
 
 using cqsp::common::components::ResourceLedger;
 
+const double ResourceLedger::operator[](const entt::entity entity) const 
+{
+    
+    cqsp::common::components::LedgerMap::const_iterator location =
+        this->find(entity); 
+    if (location == this->end()) 
+    {
+        return 0;
+    } else {
+        return location->second;
+    }
+}
+
 bool ResourceLedger::EnoughToTransfer(const ResourceLedger &amount) {
     bool b = true;
     for (auto it = amount.begin(); it != amount.end(); it++) {
@@ -357,6 +370,28 @@ ResourceLedger ResourceLedger::SafeDivision(const ResourceLedger &other) {
     return ledger;
 }
 
+/// <summary>
+/// Finds the smallest value in the Ledger.
+/// </summary>
+/// <returns>The smallest value in the ledger</returns>
+double ResourceLedger::Min() {
+    double Minimum = this->begin()->second;
+    for (auto iterator = this->begin(); iterator != this->end(); iterator++)
+        if (iterator->second < Minimum) Minimum = iterator->second;
+    return Minimum;
+}
+
+/// <summary>
+/// Finds the largest value in the Ledger.
+/// </summary>
+/// <returns>The largest value in the ledger</returns>
+double ResourceLedger::Max() {
+    double Maximum = this->begin()->second;
+    for (auto iterator = this->begin(); iterator != this->end(); iterator++)
+        if (iterator->second > Maximum) Maximum = iterator->second;
+    return Maximum;
+}
+
 double ResourceLedger::Average() {
     return this->GetSum() / this->size();
 }
@@ -379,9 +414,23 @@ ResourceLedger RecipeOutput::operator*(
     ledger[entity] = value * amount;
     return ledger;
 }
+
 ResourceLedger RecipeOutput::operator*(ResourceLedger & ledger) const {
     ResourceLedger ret;
     ret[entity] = ledger[entity] * amount;
     return ret;
+}
+
+/// <summary>
+/// Creates a new resource ledger using the keys from one resource ledger, and the values from annother
+/// </summary>
+ResourceLedger CopyVals(const ResourceLedger &keys,
+                        const ResourceLedger &values) {
+    ResourceLedger tkeys = keys;
+    for (auto iterator = keys.begin(); iterator != keys.end();
+         iterator++) {
+        tkeys[iterator->first] = values[iterator->first];
+    }
+    return tkeys;
 }
 }  // namespace cqsp::common::components
