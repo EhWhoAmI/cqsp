@@ -89,13 +89,9 @@ bool MergeCompare(const ResourceLedger &m1, const ResourceLedger&m2,
 
 using cqsp::common::components::ResourceLedger;
 
-const double ResourceLedger::operator[](const entt::entity entity) const 
-{
-    
-    cqsp::common::components::LedgerMap::const_iterator location =
-        this->find(entity); 
-    if (location == this->end()) 
-    {
+const double ResourceLedger::operator[](const entt::entity entity) const {
+    components::LedgerMap::const_iterator location = this->find(entity);
+    if (location == this->end()) {
         return 0;
     } else {
         return location->second;
