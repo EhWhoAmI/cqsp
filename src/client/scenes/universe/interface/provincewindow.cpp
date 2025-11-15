@@ -566,9 +566,12 @@ void SysProvinceInformation::SpacePortOrdersTab() {
 
 void SysProvinceInformation::SpacePortResourceTab() {
     auto& space_port = GetUniverse().get<components::infrastructure::SpacePort>(current_city);
-    if (ImGui::BeginTable("space_port_resource_tables", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+    if (ImGui::BeginTable("space_port_resource_tables", 5, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
         ImGui::TableSetupColumn("Good");
         ImGui::TableSetupColumn("Output Resources");
+        ImGui::TableSetupColumn("Output Resources Rate");
+        ImGui::TableSetupColumn("Resource Stockpile");
+        ImGui::TableSetupColumn("Demanded Resources Rate");
 
         ImGui::TableHeadersRow();
         auto goodsview = GetUniverse().view<components::Price>();
@@ -578,7 +581,13 @@ void SysProvinceInformation::SpacePortResourceTab() {
             ImGui::TableSetColumnIndex(0);
             ImGui::TextFmt("{}", GetName(GetUniverse(), good_entity));
             ImGui::TableSetColumnIndex(1);
-            ImGui::TextFmt("{}", util::NumberToHumanString(space_port.output_resources[good_entity]));
+            ImGui::TextFmt("{}", util::NumberToHumanString(space_port.demanded_resources[good_entity]));
+            ImGui::TableSetColumnIndex(2);
+            ImGui::TextFmt("{}", util::NumberToHumanString(space_port.demanded_resources_rate[good_entity]));
+            ImGui::TableSetColumnIndex(3);
+            ImGui::TextFmt("{}", util::NumberToHumanString(space_port.resource_stockpile[good_entity]));
+            ImGui::TableSetColumnIndex(4);
+            ImGui::TextFmt("{}", util::NumberToHumanString(space_port.output_resources_rate[good_entity]));
         }
         ImGui::EndTable();
     }

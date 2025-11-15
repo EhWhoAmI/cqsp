@@ -54,6 +54,9 @@ void SysSpacePort::DoSystem() {
                 if (ship != entt::null) {
                     auto& stockpile = GetUniverse().emplace<components::ResourceStockpile>(ship);
                     stockpile[element.good] = element.amount;
+                    auto& target_port_component = GetUniverse().get<components::infrastructure::SpacePort>(target);
+                    target_port_component.demanded_resources -= stockpile;
+                    // Now subtract the resources from the target resource stockpile
 
                     GetUniverse().emplace<client::ctx::VisibleOrbit>(ship);
                 }
@@ -76,7 +79,7 @@ void SysSpacePort::ProcessDockedShips(entt::entity space_port) {
         if (!GetUniverse().any_of<components::ResourceStockpile>(ship)) {
             continue;
         }
-        space_port_comp.output_resources += GetUniverse().get<components::ResourceStockpile>(ship);
+        space_port_comp.resource_stockpile += GetUniverse().get<components::ResourceStockpile>(ship);
         GetUniverse().remove<components::ResourceStockpile>(ship);
     }
 }

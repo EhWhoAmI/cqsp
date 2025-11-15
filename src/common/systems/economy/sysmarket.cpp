@@ -49,9 +49,9 @@ void SysMarket::DoSystem() {
             market.supply() += space_port.output_resources_rate;
 
             // Remove the ones that are less than zero
-            space_port.output_resources -= space_port.output_resources_rate;
+            space_port.resource_stockpile -= space_port.output_resources_rate;
             // If they're higher we set the output resouurces to zero
-            for (auto& [good, value] : space_port.output_resources) {
+            for (auto& [good, value] : space_port.resource_stockpile) {
                 if (value < 0) {
                     space_port.output_resources_rate[good] = 0;
                 }
