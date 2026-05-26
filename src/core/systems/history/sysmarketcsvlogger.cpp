@@ -51,7 +51,7 @@ void SysMarketCsvHistory::DoSystem() {
         auto double_list =
             GetUniverse().GoodIterator() | std::views::transform([&market](const components::GoodEntity good) {
                 return std::to_string(market.supply[good]) + "," + std::to_string(market.demand[good]) + "," +
-                       std::to_string(market.sd_ratio[good]) + "," + std::to_string(market.volume[good]) + "," +
+                       std::to_string(market.supply[good]) + "," + std::to_string(market.volume[good]) + "," +
                        std::to_string(market.price[good]) + "," + std::to_string(market.chronic_shortages[good]) + "," +
                        std::to_string(market.trade[good]) + "," + std::to_string(market.taxation[good]) + "," +
                        std::to_string(market.production[good]) + "," + std::to_string(market.consumption[good]);

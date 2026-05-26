@@ -99,7 +99,6 @@ void SysMarket::ProcessMarket(Node market_node, components::Market& market) {
 }
 
 void SysMarket::DeterminePrice(Market& market, components::GoodEntity good_entity) {
-    const double sd_ratio = market.sd_ratio[good_entity];
     const double supply = market.supply[good_entity];
     const double demand = market.demand[good_entity];
     // Get parent market price
@@ -124,7 +123,6 @@ void SysMarket::DetermineSupplyDemand(components::Market& market) {
     market.demand = market.consumption;
     market.supply.AddPositive(market.trade);
     market.demand.AddNegative(market.trade);
-    market.sd_ratio = (market.supply).SafeDivision(market.demand);
 }
 
 void SysMarket::Init() {
@@ -148,7 +146,6 @@ void SysMarket::Init() {
                 market.market_access[good_node] = GetUniverse().economy_config.market_config.default_market_access;
             }
         }
-        market.sd_ratio = market.supply.SafeDivision(market.demand);
     }
 
     for (auto good_node : GetUniverse().GoodIterator()) {

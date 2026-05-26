@@ -409,7 +409,7 @@ sol::table GetMarketTable(Universe& universe, sol::state_view& script_engine, en
         good_table["price"] = market_component.price[universe.good_map[good]];
         good_table["supply"] = market_component.supply[universe.good_map[good]];
         good_table["demand"] = market_component.demand[universe.good_map[good]];
-        good_table["sd_ratio"] = market_component.sd_ratio[universe.good_map[good]];
+        good_table["sd_ratio"] = 0;
         good_table["consumption"] = market_component.consumption[universe.good_map[good]];
         good_table["production"] = market_component.production[universe.good_map[good]];
         good_table["trade"] = market_component.trade[universe.good_map[good]];

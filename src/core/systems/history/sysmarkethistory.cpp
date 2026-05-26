@@ -29,7 +29,7 @@ void SysMarketHistory::DoSystem() {
         history.gdp.push_back(market.GDP);
         for (auto good : GetUniverse().GoodIterator()) {
             history.price_history[static_cast<int>(good)].push_back(market.price[good]);
-            history.sd_ratio[static_cast<int>(good)].push_back(market.sd_ratio[good]);
+            history.sd_ratio[static_cast<int>(good)].push_back(market.price[good]);
             history.supply[static_cast<int>(good)].push_back(market.supply[good]);
             history.demand[static_cast<int>(good)].push_back(market.demand[good]);
         }

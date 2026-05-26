@@ -79,12 +79,6 @@ void MarketInformationTable(core::Universe& universe, const entt::entity& market
         ImGui::TableSetColumnIndex(3);
         ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(market.demand[good_entity]));
         ImGui::TableSetColumnIndex(4);
-        double sd_ratio = market.sd_ratio[good_entity];
-        if (sd_ratio == std::numeric_limits<double>::infinity()) {
-            ImGui::TextFmt("inf");
-        } else {
-            ImGui::TextFmt("{}", sd_ratio);
-        }
         ImGui::TableSetColumnIndex(5);
         ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(market.production[good_entity]));
         ImGui::TableSetColumnIndex(6);
@@ -152,12 +146,6 @@ core::components::GoodEntity SelectableMarketInformationTable(core::Universe& un
         ImGui::TableSetColumnIndex(3);
         ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(market.demand[good_entity]));
         ImGui::TableSetColumnIndex(4);
-        double sd_ratio = market.sd_ratio[good_entity];
-        if (sd_ratio == std::numeric_limits<double>::infinity()) {
-            ImGui::TextFmt("inf");
-        } else {
-            ImGui::TextFmt("{}", sd_ratio);
-        }
         ImGui::TableSetColumnIndex(5);
         ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(market.production[good_entity]));
         ImGui::TableSetColumnIndex(6);

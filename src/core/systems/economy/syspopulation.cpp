@@ -138,10 +138,11 @@ void SysPopulationConsumption::ProcessSettlement(Node& settlement, const Resourc
             // Check how much job we should cut and stuff
             // So we need to loop through our market and see our possible jobs
             // In the future we should make a graph or something so that we don't need to check everything
-            if (labor != GetUniverse().default_job && market.sd_ratio[labor_comp.good] > 2) {
+            if (labor != GetUniverse().default_job &&
+                (market.supply[labor_comp.good] / market.demand[labor_comp.good]) > 2) {
                 // Then we should probably start cutting
                 // Find a ratio for amount we should cut...
-                double delta = std::min((market.sd_ratio[labor_comp.good] - 2), 10.);
+                double delta = std::min(((market.supply[labor_comp.good] / market.demand[labor_comp.good]) - 2), 10.);
                 double difference = workers * 0.01 * delta;
                 job_drift[GetUniverse().default_job] += difference;
                 job_drift[labor] -= difference;
@@ -178,7 +179,7 @@ void SysPopulationConsumption::ProcessSettlement(Node& settlement, const Resourc
             segment.labor.labor_hours.emplace_back(labor_comp.good, tick_hours * workers);
             workforce += workers;
             hours_sum += tick_hours * workers;
-            double unemployment_rate = 1 / market.sd_ratio[labor_comp.good];
+            double unemployment_rate = 1 / (market.supply[labor_comp.good] / market.demand[labor_comp.good]);
 
             // Then we should do something about it
             // If we are way over we are also overemployed...

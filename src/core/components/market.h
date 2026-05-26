@@ -52,7 +52,6 @@ struct Market {
     Market(size_t good_count)
         : demand(good_count),
           supply(good_count),
-          sd_ratio(good_count),
           volume(good_count),
           price(good_count),
           chronic_shortages(good_count),
@@ -72,13 +71,11 @@ struct Market {
 
     ResourceLedger demand;
     ResourceLedger supply;
-    ResourceLedger sd_ratio;
 
     /// <summary>
     /// The amount of goods that changed hands. We can use this to calculate the
     /// GDP
     /// </summary>
-    ResourceLedger volume;
     ResourceLedger price;
     ResourceLedger chronic_shortages;
     ResourceLedger trade;
