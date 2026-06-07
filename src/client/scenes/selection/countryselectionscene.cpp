@@ -48,8 +48,10 @@ void CountrySelectionScene::Update(float deltaTime) {
 
     if (selected_country != new_selected_country) {
         // Fire new event
+        SPDLOG_INFO("Firing event!");
         selected_country = new_selected_country;
         for (auto& ui : documents) {
+            SPDLOG_INFO("Dispatching event!");
             ui->DispatchEvent("provinceselect", {});
         }
     }
@@ -76,7 +78,9 @@ void CountrySelectionScene::InitializeLuaFunctions() {
     CREATE_NAMESPACE(selection);
 
     REGISTER_FUNCTION("start_game", [&]() { StartGame(); });
-    REGISTER_FUNCTION("get_selected_country", [&]() { return selected_country; });
+    REGISTER_FUNCTION("get_selected_country", [&]() {
+        SPDLOG_INFO("Selecting country!");
+        return selected_country;
+    });
 }
-
 }  // namespace cqsp::client::scene
