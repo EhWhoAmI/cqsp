@@ -16,36 +16,17 @@
  */
 #pragma once
 
-#include <random>
-#include <string_view>
-
 #include "core/loading/hjsonloader.h"
+#include "core/universe.h"
 
 namespace cqsp::core::loading {
-/// <summary>
-/// This loader has to be loaded after \ref PlanetLoader because it adds the cities to the
-/// respectve planets
-/// </summary>
-class ProvinceLoader : public HjsonLoader {
+class PowerGridLoader : public HjsonLoader {
  public:
-    explicit ProvinceLoader(Universe& universe);
-
+    explicit PowerGridLoader(Universe& universe) : HjsonLoader(universe) {}
     const Hjson::Value& GetDefaultValues() override { return default_val; }
     bool LoadValue(const Hjson::Value& values, Node& node) override;
-    void PostLoad(const Node& node) override;
-    void ParseIndustry(const Hjson::Value& industry_hjson, Node& node, std::string_view identifier);
 
  private:
     Hjson::Value default_val;
-    Node GetCountry(const std::string& country_identifier, const std::string& identifier);
-    Node GetPlanet(const std::string& planet_identifier, const std::string& identifier);
-
-    Node ParsePopulation(const Hjson::Value& population_hjson);
-    void LoadInfrastructure(const Hjson::Value& value, const Node& node);
-
-    std::random_device rd;
-    std::mt19937 gen;
-    std::uniform_int_distribution<> distrib;
-    TagLoader loader;
 };
 }  // namespace cqsp::core::loading

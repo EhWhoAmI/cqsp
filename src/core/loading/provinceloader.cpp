@@ -150,14 +150,11 @@ bool ProvinceLoader::LoadValue(const Hjson::Value& values, Node& node) {
         infrastructure.default_purchase_cost = 100;
     }
     if (!values["infrastructure"].empty()) {
-        SPDLOG_INFO("Has Infrastructure");
+        SPDLOG_TRACE("Has Infrastructure");
         // Load infrastructure
-        if (!values["infrastructure"]["highway"].empty()) {
-            SPDLOG_INFO("Has highway");
-            // Set the stuff
-            auto& highway = node.emplace<components::infrastructure::Highway>();
-            highway.extent = values["infrastructure"]["highway"].to_double();
-        }
+        // Check for infrastructure
+        LoadInfrastructure(values["infrastructure"], node);
+        // Check for power plants
     }
 
     //SPDLOG_INFO("Load Tags");
@@ -171,6 +168,36 @@ bool ProvinceLoader::LoadValue(const Hjson::Value& values, Node& node) {
     node.emplace<components::infrastructure::ConstructionSector>(static_cast<uint32_t>(1000), static_cast<uint32_t>(0),
                                                                  1000.);
     return true;
+}
+
+void ProvinceLoader::LoadInfrastructure(const Hjson::Value& value, const Node& node) {
+    auto& infrastructure = node.get<components::infrastructure::CityInfrastructure>();
+
+    if (!value["power_plants"].empty()) {
+        const Hjson::Value& power_plants = value["power_plants"];
+        for (int i = 0; i < power_plants.size(); i++) {
+            // Get the pwoer plant
+            std::string type = power_plants[i]["type"].to_string();
+            double size = power_plants[i]["size"].to_double();
+            // Then check if it exists and stuff
+            entt::entity power_plant_type = universe.infrastructure["power:" + type];
+            // Then construct a new plant or something
+            entt::entity power_plant = universe.create();
+            auto& recipe = universe.get<components::infrastructure::PowerPlantRecipe>(power_plant_type);
+            
+            auto& power_plant_comp = universe.emplace<components::infrastructure::PowerPlant>(power_plant);
+            power_plant_comp.maximum_production = recipe.maximum_production * size;
+            infrastructure.power_plants.push_back(power_plant);
+        }
+    }
+    
+    if (!value["power_grid"].empty()) {
+        // Then set power grid
+        infrastructure.power_grid = universe.infrastructure["grid:" + value["power_grid"].to_string()];
+    } else {
+        // Then just some random power grid?
+        infrastructure.power_grid = universe.infrastructure["grid:usa"];
+    }
 }
 
 void ProvinceLoader::PostLoad(const Node& node) {}

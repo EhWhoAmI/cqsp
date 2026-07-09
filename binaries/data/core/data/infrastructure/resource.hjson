@@ -1,0 +1,12 @@
+{
+    power_plants: {
+        path: powerplant
+        type: hjson
+        hints: {}
+    }
+    power_grids: {
+        path: powergrid
+        type: hjson
+        hints: {}
+    }
+}

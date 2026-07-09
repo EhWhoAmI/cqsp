@@ -77,6 +77,7 @@ void ResourceTooltipSection(const Universe& universe, entt::entity entity) {
         ImGui::TextFmt("Last Tick Difference: {}", production.diff);
         ImGui::TextFmt("Material Cost: {}", NumberToHumanString(production.material_costs));
         ImGui::TextFmt("Wage Cost: {}", NumberToHumanString(production.wage_cost));
+        ImGui::TextFmt("Power consumption: {} W", NumberToHumanString(production.power_consumption));
         ImGui::TextFmt("Construction Cost: {}", NumberToHumanString(production.construction_cost));
         ImGui::TextFmt("Maintenance Cost: {}", NumberToHumanString(production.maintenance));
         ImGui::TextFmt("Transport Costs: {}", NumberToHumanString(production.transport));
@@ -103,13 +104,6 @@ void ResourceTooltipSection(const Universe& universe, entt::entity entity) {
         ImGui::TextFmt("Revenue: {}", NumberToHumanString(production.revenue));
     }
 
-    if (universe.all_of<components::infrastructure::PowerConsumption>(entity)) {
-        ImGui::Separator();
-        auto& consumption = universe.get<components::infrastructure::PowerConsumption>(entity);
-        ImGui::TextFmt("Power: {}", consumption.current);
-        ImGui::TextFmt("Max Power: {}", consumption.max);
-        ImGui::TextFmt("Min Power: {}", consumption.min);
-    }
     if (universe.all_of<components::Price>(entity)) {
         ImGui::TextFmt("Default Price: {}", universe.get<components::Price>(entity).price);
     }

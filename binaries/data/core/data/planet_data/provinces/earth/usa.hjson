@@ -386,6 +386,17 @@
                 profit: 57857.27624656004
             }
         ]
+        infrastructure: {
+            power_grid: usa
+            power_plants: [
+                {
+                    type: coal_power_plant
+                    // Then other stuff?
+                    size: 1
+                }
+            ]
+            // Then define other stuff
+        }
         tags: ["log_market"]
     }
     {
@@ -648,7 +659,6 @@
             }
         ]
         transport: 0.05
-        infrastructure: {highway: 0.02}
     }
     {
         identifier: north_carolina
