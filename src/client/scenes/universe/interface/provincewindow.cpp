@@ -153,6 +153,10 @@ void SysProvinceInformation::ProvinceIndustryTabs() {
             InvestmentTab();
             ImGui::EndTabItem();
         }
+        if (ImGui::BeginTabItem("Real Estate")) {
+            RealEstateTab();
+            ImGui::EndTabItem();
+        }
         const bool has_spaceport = HasSpacePort(current_province);
         if (!has_spaceport) {
             ImGui::BeginDisabled();
@@ -1087,6 +1091,27 @@ void SysProvinceInformation::ColonizationTabs() {
             mission_comp.target_body = province_comp.planet;
             queue.list.push_back(new_mission);
         }
+    }
+}
+
+void SysProvinceInformation::RealEstateTab() {
+    if (ImGui::BeginTable("zone_table", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+        // Now then loop through the ghings
+        ImGui::TableSetupColumn("Zoning Type");
+        ImGui::TableSetupColumn("Used");
+        ImGui::TableSetupColumn("Allocated");
+        ImGui::TableHeadersRow();
+        auto& provinces = GetUniverse().get<components::Province>(current_province);
+        for (auto& [entity, zone] : provinces.zoning) {
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+            ImGui::TextFmt("{}", core::util::GetName(GetUniverse(), entity));
+            ImGui::TableSetColumnIndex(1);
+            ImGui::TextFmt("{}", NumberToHumanString(zone.filled));
+            ImGui::TableSetColumnIndex(2);
+            ImGui::TextFmt("{}", NumberToHumanString(zone.allocated));
+        }
+        ImGui::EndTable();
     }
 }
 
