@@ -1,7 +1,14 @@
 [
     {identifier: "food"}
     {identifier: "water"}
-    {identifier: "heating"}
+    {
+        identifier: "fuel"
+        description: "Used for heating, cooking, and powering transportation"
+        // Then how do we determine what sol each person needs...
+        demand: [
+            // Then some curve for that...
+        ]
+    }
     {identifier: "household"}
     {identifier: "entertainment"}
 ]

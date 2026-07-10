@@ -31,7 +31,10 @@ struct PopulationSegment {
     uint64_t employed_amount = 0;
     uint64_t unemployment_rate = 0;
     // Just an index for the amount of marginal propensity that we want to consume...
+    // Standard of living for the propensity
     double standard_of_living = 1;
+    // How much cost them to do stuff
+    double cost_of_living = 0;
     double consumer_confidence = 1;
     // Years of education?
     // Helps increase our expertise faster
@@ -46,6 +49,14 @@ struct PopulationSegment {
     double saving_ratio = 0.1;
 
     double average_wage = 0;
+};
+
+// Then consumption types?
+enum class ConsumptionClass {
+    Fuel,
+    Food,
+    Clothing,
+    Entertainment,
 };
 
 struct Hunger {};

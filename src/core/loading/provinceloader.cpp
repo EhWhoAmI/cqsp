@@ -58,9 +58,9 @@ ProvinceLoader::ProvinceLoader(Universe& universe) : HjsonLoader(universe), gen(
 }
 
 bool ProvinceLoader::LoadValue(const Hjson::Value& values, Node& node) {
-    const auto& identifier = node.get<components::Identifier>().identifier;
-    Node planet_node = GetPlanet(values["planet"].to_string(), identifier);
-    Node country_node = GetCountry(values["country"].to_string(), identifier);
+    const auto& identifier = GetIdentifier(node);
+    Node planet_node = GetPlanet(RequiredString(values, "planet"), identifier);
+    Node country_node = GetCountry(LoadString(values, "country", ""), identifier);
     node.emplace<components::Province>(country_node, planet_node);
 
     std::tuple<int, int, int> color_value;
@@ -144,11 +144,8 @@ bool ProvinceLoader::LoadValue(const Hjson::Value& values, Node& node) {
     }
 
     auto& infrastructure = node.emplace<components::infrastructure::CityInfrastructure>();
-    if (!values["transport"].empty()) {
-        infrastructure.default_purchase_cost = values["transport"].to_double();
-    } else {
-        infrastructure.default_purchase_cost = 100;
-    }
+    infrastructure.default_purchase_cost = LoadDouble(values, "transport", 100);
+
     if (!values["infrastructure"].empty()) {
         SPDLOG_TRACE("Has Infrastructure");
         // Load infrastructure
@@ -213,6 +210,7 @@ Node ProvinceLoader::GetCountry(const std::string& country_identifier, const std
 }
 
 Node ProvinceLoader::GetPlanet(const std::string& planet_identifier, const std::string& identifier) {
+    SPDLOG_INFO("planet id: {}", planet_identifier);
     if (!universe.planets.contains(planet_identifier)) {
         SPDLOG_WARN("Unable to find planet for the province {}!", identifier);
         return Node(universe, entt::null);
