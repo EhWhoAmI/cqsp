@@ -51,13 +51,5 @@ struct PopulationSegment {
     double average_wage = 0;
 };
 
-// Then consumption types?
-enum class ConsumptionClass {
-    Fuel,
-    Food,
-    Clothing,
-    Entertainment,
-};
-
 struct Hunger {};
 }  // namespace cqsp::core::components

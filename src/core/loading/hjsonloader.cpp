@@ -111,7 +111,6 @@ std::string HjsonLoader::RequiredString(const Hjson::Value& value, const std::st
     if (value[name].empty() || value[name].type() == Hjson::Type::Vector || value[name].type() == Hjson::Type::Map) {
         throw LoadingException(fmt::format("Value \"{}\" does not exist!", name));
     } else {
-        SPDLOG_INFO("{}", value[name].to_string());
         return value[name].to_string();
     }
 }

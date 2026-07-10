@@ -210,7 +210,6 @@ Node ProvinceLoader::GetCountry(const std::string& country_identifier, const std
 }
 
 Node ProvinceLoader::GetPlanet(const std::string& planet_identifier, const std::string& identifier) {
-    SPDLOG_INFO("planet id: {}", planet_identifier);
     if (!universe.planets.contains(planet_identifier)) {
         SPDLOG_WARN("Unable to find planet for the province {}!", identifier);
         return Node(universe, entt::null);
@@ -234,25 +233,11 @@ void ProvinceLoader::ParseIndustry(const Hjson::Value& industry_hjson, Node& nod
         Node factory = actions::CreateFactory(node, rec_ent, size);
         auto& size_comp = factory.get_or_emplace<components::ProductionUnit>();
 
-        if (!ind_val["revenue"].empty()) {
-            size_comp.revenue = ind_val["revenue"].to_double();
-        }
-
-        if (!ind_val["material_costs"].empty()) {
-            size_comp.material_costs = ind_val["material_costs"].to_double();
-        }
-
-        if (!ind_val["profit"].empty()) {
-            size_comp.profit = ind_val["profit"].to_double();
-        }
-
-        if (!ind_val["utilization"].empty()) {
-            size_comp.utilization = ind_val["utilization"].to_double();
-        }
-
-        if (!ind_val["continuous_gains"].empty()) {
-            size_comp.continuous_gains = ind_val["continuous_gains"].to_double();
-        }
+        size_comp.revenue = LoadDouble(ind_val, "revenue");
+        size_comp.material_costs = LoadDouble(ind_val, "material_costs");
+        size_comp.profit = LoadDouble(ind_val, "profit");
+        size_comp.utilization = LoadDouble(ind_val, "utilization");
+        size_comp.continuous_gains = LoadDouble(ind_val, "continous_gains");
     }
 }
 
