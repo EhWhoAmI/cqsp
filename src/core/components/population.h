@@ -19,7 +19,7 @@
 #include "core/components/labor.h"
 #include "core/components/pid.h"
 #include "core/components/resource.h"
-#include "core/components/vectormap.h
+#include "core/components/vectormap.h"
 
 namespace cqsp::core::components {
 struct PopulationSegment {
@@ -50,6 +50,8 @@ struct PopulationSegment {
     double saving_ratio = 0.1;
 
     double average_wage = 0;
+
+    // Then some consumption or something
 };
 
 struct Hunger {};

@@ -21,14 +21,9 @@
 #include <string>
 #include <vector>
 
-namespace cqsp::core::components {
-/**
-* Class for goods to be accessed through an array
-*/
-enum class GoodEntity : uint32_t { null = static_cast<uint32_t>(-1) };
+#include "core/components/goodentity.h"
 
-// NOLINTNEXTLINE(clang-analyzer-optin.core.EnumCastOutOfRange)
-constexpr GoodEntity ToGoodEntity(uint32_t val) { return static_cast<GoodEntity>(val); }
+namespace cqsp::core::components {
 class ResourceLedger;
 class ResourceVector;
 

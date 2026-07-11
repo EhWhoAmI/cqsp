@@ -21,6 +21,7 @@
 #include <string>
 #include <tuple>
 
+#include "core/components/needs.h"
 #include "core/components/area.h"
 #include "core/components/bodies.h"
 #include "core/components/market.h"
@@ -101,7 +102,10 @@ bool GoodLoader::LoadValue(const Hjson::Value& values, Node& node) {
             SPDLOG_INFO("{} does not contain need!", GetIdentifier(node));
             continue;
         }
-        SPDLOG_INFO("need: {}", universe.needs[key]);
+        // Add this to the need package
+        entt::entity need = universe.needs[key];
+        auto& need_comp = universe.get<components::Need>(need);
+        need_comp.fulfillment_goods[static_cast<components::GoodEntity>(index)] += value.to_double();
     }
     // Basically if it fails at any point, we'll remove the component
     universe.goods[identifier] = node;

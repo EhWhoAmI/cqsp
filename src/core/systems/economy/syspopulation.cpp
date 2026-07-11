@@ -31,7 +31,6 @@ namespace cqsp::core::systems {
 // Must be run after SysPopulationConsumption
 // This is because population growth is dependent on if consumption was
 // satisfied.
-
 using components::ResourceConsumption;
 
 void SysPopulationConsumption::ProcessSettlement(Node& settlement, const ResourceConsumption& marginal_propensity_base,

@@ -1,5 +1,6 @@
+
 /* Conquer Space
- * Copyright (C) 2021-2026 Conquer Space
+ * Copyright (C) 2021-2025 Conquer Space
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,17 +15,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "core/loading/needloader.h"
+#pragma once
 
-#include "core/components/needs.h"
+#include <cstdint>
 
-namespace cqsp::core::loading {
-bool NeedLoader::LoadValue(const Hjson::Value& values, Node& node) {
-    // Then soemthing
-    std::string identifier = GetIdentifier(node);
-    universe.needs[identifier] = node.entity();
-    auto& need = node.emplace<components::Need>();
-    need.priority = LoadDouble(values, "priority", 0);
-    return true;
-}
-}  // namespace cqsp::core::loading
+namespace cqsp::core::components {
+/**
+* Class for goods to be accessed through an array
+*/
+enum class GoodEntity : uint32_t { null = static_cast<uint32_t>(-1) };
+
+// NOLINTNEXTLINE(clang-analyzer-optin.core.EnumCastOutOfRange)
+constexpr GoodEntity ToGoodEntity(uint32_t val) { return static_cast<GoodEntity>(val); }
+}  // namespace cqsp::core::components

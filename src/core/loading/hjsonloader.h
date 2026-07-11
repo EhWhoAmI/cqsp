@@ -25,6 +25,7 @@
 #include <glm/glm.hpp>
 
 #include "core/universe.h"
+#include <cstdint>
 
 namespace cqsp::core::loading {
 class LoadingException : public std::exception {
