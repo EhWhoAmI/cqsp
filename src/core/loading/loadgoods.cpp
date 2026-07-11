@@ -92,6 +92,17 @@ bool GoodLoader::LoadValue(const Hjson::Value& values, Node& node) {
         node.emplace<components::Unit>(values["unit"].to_string());
     }
 
+    // Load goods
+    Hjson::Value needs = LoadMap(values, "needs");
+    SPDLOG_INFO("Needs: {}", needs.size());
+    for (auto& [key, value] : needs) {
+        // Now compute the need
+        if (!universe.needs.contains(key)) {
+            SPDLOG_INFO("{} does not contain need!", GetIdentifier(node));
+            continue;
+        }
+        SPDLOG_INFO("need: {}", universe.needs[key]);
+    }
     // Basically if it fails at any point, we'll remove the component
     universe.goods[identifier] = node;
     universe.good_prices[node] = price;

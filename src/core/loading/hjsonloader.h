@@ -54,6 +54,8 @@ class HjsonLoader {
     std::string LoadString(const Hjson::Value& value, const std::string& name, const std::string& default_value);
     std::string RequiredString(const Hjson::Value& value, const std::string& name);
 
+    Hjson::Value LoadMap(const Hjson::Value& value, const std::string& name);
+
     const std::string& GetIdentifier(const Node& node);
 
  protected:

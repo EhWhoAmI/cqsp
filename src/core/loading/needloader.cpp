@@ -23,7 +23,8 @@ bool NeedLoader::LoadValue(const Hjson::Value& values, Node& node) {
     // Then soemthing
     std::string identifier = GetIdentifier(node);
     universe.needs[identifier] = node;
-    node.emplace<components::Need>();
+    auto& need = node.emplace<components::Need>();
+    need.priority = LoadDouble(values, "priority", 0);
     return false;
 }
 }  // namespace cqsp::core::loading

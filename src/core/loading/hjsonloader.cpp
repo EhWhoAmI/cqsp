@@ -93,7 +93,7 @@ double HjsonLoader::LoadDouble(const Hjson::Value& value, const std::string& nam
 
 double HjsonLoader::RequiredDouble(const Hjson::Value& value, const std::string& name) {
     if (value[name].empty() || (value[name].type() != Hjson::Type::Double && value[name].type() != Hjson::Type::Int64)) {
-        throw LoadingException(fmt::format("Value \"{}\" does not exist!", name));
+        throw LoadingException(fmt::format("Field \"{}\" does not exist!", name));
     } else {
         return value[name].to_double();
     }
@@ -109,9 +109,17 @@ std::string HjsonLoader::LoadString(const Hjson::Value& value, const std::string
 
 std::string HjsonLoader::RequiredString(const Hjson::Value& value, const std::string& name) {
     if (value[name].empty() || value[name].type() == Hjson::Type::Vector || value[name].type() == Hjson::Type::Map) {
-        throw LoadingException(fmt::format("Value \"{}\" does not exist!", name));
+        throw LoadingException(fmt::format("Field \"{}\" does not exist!", name));
     } else {
         return value[name].to_string();
+    }
+}
+
+Hjson::Value HjsonLoader::LoadMap(const Hjson::Value& value, const std::string& name) {
+    if (value[name].empty() || value[name].type() != Hjson::Type::Map) {
+        return Hjson::Value();
+    } else {
+        return value[name];
     }
 }
 

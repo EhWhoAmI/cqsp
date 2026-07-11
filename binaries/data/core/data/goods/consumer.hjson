@@ -72,6 +72,9 @@
       consumer
       fluid
     ]
+    needs: {
+      fuel: 1
+    }
   }
   {
     identifier: groceries
@@ -86,6 +89,9 @@
     tags: [
       consumer
     ]
+    needs: {
+      food: 1
+    }
   }
   {
     identifier: household_products

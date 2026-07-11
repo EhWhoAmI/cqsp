@@ -1,14 +1,27 @@
 [
-    {identifier: "food"}
-    {identifier: "water"}
     {
-        identifier: "fuel"
-        description: "Used for heating, cooking, and powering transportation"
+        identifier: food
+        priority: 99
+        minimum: 1
+    }
+    {
+        identifier: water
+        priority: 100
+        minimum: 1
+    }
+    {
+        identifier: fuel
+        description: Used for heating, cooking, and powering transportation
         // Then how do we determine what sol each person needs...
         demand: [
             // Then some curve for that...
         ]
+        // Then how do we require things...
+        priority: 90
     }
     {identifier: "household"}
     {identifier: "entertainment"}
+    {
+        identifier: clothing
+    }
 ]

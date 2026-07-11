@@ -19,6 +19,7 @@
 #include "core/components/labor.h"
 #include "core/components/pid.h"
 #include "core/components/resource.h"
+#include "core/components/vectormap.h
 
 namespace cqsp::core::components {
 struct PopulationSegment {
