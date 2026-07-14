@@ -260,6 +260,20 @@ void SysProvinceInformation::DemographicsTab() {
             }
             ImGui::EndTable();
         }
+
+        if (ImGui::BeginTable("pop_list", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+            ImGui::TableSetupColumn("Need");
+            ImGui::TableSetupColumn("Amount");
+            ImGui::TableHeadersRow();
+            for (auto& [need, amount] : pop_segment.need_points) {
+                ImGui::TableNextRow();
+                ImGui::TableSetColumnIndex(0);
+                ImGui::TextFmt("{}", GetName(GetUniverse(), need));
+                ImGui::TableSetColumnIndex(1);
+                ImGui::TextFmt("{}", amount);
+            }
+            ImGui::EndTable();
+        }
         // Get spending for population
         DisplayWallet(seg_entity);
         if (GetUniverse().all_of<Wallet>(seg_entity)) {

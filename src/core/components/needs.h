@@ -18,8 +18,7 @@
 
 #include <entt/entity/entity.hpp>
 
-#include "core/components/vectormap.h"
-#include "core/components/goodentity.h"
+#include "core/components/resourceledger.h"
 
 namespace cqsp::core::components {
 struct Need {
@@ -32,6 +31,6 @@ struct Need {
     uint16_t minimum;
     uint16_t minimum_desired;
     // Goods that can fulfill a certain need
-    VectorMap<GoodEntity, double> fulfillment_goods;
+    ResourceVector fulfillment_goods;
 };
 }  // namespace cqsp::core::components

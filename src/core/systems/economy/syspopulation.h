@@ -30,8 +30,9 @@ class SysPopulationConsumption : public ISimulationSystem {
     int Interval() const override { return ECONOMIC_TICK; }
 
  private:
-    void ProcessSettlement(Node& settlement, const components::ResourceConsumption& marginal_propensity_base,
-                           const components::ResourceConsumption& autonomous_consumption_base, const float savings);
+    void ProcessSettlement(Node& settlement);
+    void ProcessSegment(Node& node_segment, components::Market& market);
+    void UpdateStandardOfLiving(components::PopulationSegment& segment);
     components::ResourceConsumption marginal_propensity_base;
     components::ResourceConsumption autonomous_consumption_base;
     float savings = 0;

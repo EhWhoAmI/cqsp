@@ -28,6 +28,7 @@
 #include "core/components/population.h"
 #include "core/components/spaceport.h"
 #include "core/components/surface.h"
+#include "core/components/needs.h"
 #include "core/util/color.h"
 #include "core/util/nameutil.h"
 
@@ -247,15 +248,8 @@ Node ProvinceLoader::ParsePopulation(const Hjson::Value& population_hjson) {
     auto size = population_hjson["size"].to_int64();
     auto& segment = pop_node.emplace<components::PopulationSegment>();
 
-    double standard_of_living = 0;
-    if (!population_hjson["sol"].empty()) {
-        standard_of_living = population_hjson["sol"].to_double();
-    }
-
-    double balance = 0;
-    if (!population_hjson["balance"].empty()) {
-        balance = population_hjson["balance"].to_double();
-    }
+    double standard_of_living = LoadDouble(population_hjson, "sol", 0);
+    double balance = LoadDouble(population_hjson, "balance", 0);
 
     int64_t labor_force = size / 2;
     if (!population_hjson["labor_force"].empty()) {
@@ -284,6 +278,10 @@ Node ProvinceLoader::ParsePopulation(const Hjson::Value& population_hjson) {
         SPDLOG_WARN("Pop doesn't have a job distribution");
     }
 
+    for (entt::entity entity : universe.view<components::Need>()) {
+        segment.need_points[entity] = 1;
+    }
+ 
     segment.population = size;
     segment.labor_force = labor_force;
     segment.standard_of_living = standard_of_living;

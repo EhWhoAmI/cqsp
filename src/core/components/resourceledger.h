@@ -263,6 +263,8 @@ class ResourceVector : public std::vector<std::pair<GoodEntity, double>> {
 
     double operator[](const GoodEntity& good) const;
 
+    double& operator[](const GoodEntity& good);
+
     /**
      * Gets the sum of all the goods in this resource ledger.
      */

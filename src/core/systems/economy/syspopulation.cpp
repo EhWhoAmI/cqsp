@@ -33,9 +33,7 @@ namespace cqsp::core::systems {
 // satisfied.
 using components::ResourceConsumption;
 
-void SysPopulationConsumption::ProcessSettlement(Node& settlement, const ResourceConsumption& marginal_propensity_base,
-                                                 const ResourceConsumption& autonomous_consumption_base,
-                                                 const float savings) {
+void SysPopulationConsumption::ProcessSettlement(Node& settlement) {
     ZoneScoped;
     // Get the transport cost
     auto& settlement_comp = settlement.get<components::Settlement>();
@@ -45,73 +43,69 @@ void SysPopulationConsumption::ProcessSettlement(Node& settlement, const Resourc
     if (!settlement.any_of<components::infrastructure::CityInfrastructure>()) {
         return;
     }
-    // Also get our job stuff...
-    auto& infrastructure = settlement.get<components::infrastructure::CityInfrastructure>();
-    // Calculate the infrastructure cost
-    double infra_cost = infrastructure.default_purchase_cost - infrastructure.improvement;
+
     auto& market = settlement.get<components::Market>();
     // Anything positive is a job that we want to shift away from, anything negative is something we want to shift to
     // Loop through the population segments through the settlements
     for (Node node_segment : settlement.Convert(settlement_comp.population)) {
-        // Compute things
-        components::PopulationSegment& segment = node_segment.get_or_emplace<components::PopulationSegment>();
-        ResourceConsumption& consumption = node_segment.get_or_emplace<ResourceConsumption>();
-        // Reduce pop to some unreasonably low level so that the economy can
-        // handle it
-        const uint64_t population = segment.population;
-
-        consumption = autonomous_consumption_base;
-
-        // This value only changes when pop changes and
-        // should be calculated in SysPopulationGrowth
-        consumption *= population;
-
-        components::Wallet& wallet = node_segment.get_or_emplace<components::Wallet>();
-        double cost = (consumption * market.price).GetSum();
-
-        if (wallet > 0) {  // If the pop has cash left over spend it
-            // Add to the cost of price of transport
-            const ResourceConsumption& extraconsumption = marginal_propensity_base;
-
-            double extra_cost = (extraconsumption * market.price).GetSum();  // Distribute wallet amongst goods
-
-            extra_cost *= segment.standard_of_living;
-
-            // Now we should change the value that we do
-            // Also see if we have extra money and then we can adjust SOL or something like that
-            consumption += extraconsumption * segment.standard_of_living;  // Remove purchased goods from the market
-
-            // Consumption
-            // Check if there's enough on the market
-            // Add the transport costs, and because they're importing it, we only account this
-            cost += extra_cost;
-        }
-
-        // Our income should be equal to our spending...
-        double spending_ratio = (segment.income > 0) ? (segment.income - segment.spending) / segment.income : -1.0;
-
-        segment.sol_pid.Update(std::clamp(spending_ratio, -2.0, 2.0));
-
-        double sol_delta = 200 * segment.sol_pid.GetValue(components::PIDConfig {0.01, 0.1, 0.01});
-        sol_delta = std::clamp(sol_delta, -segment.standard_of_living * 0.1, segment.standard_of_living * 0.1);
-        segment.standard_of_living = std::max(segment.standard_of_living + sol_delta, 1.);
-
-        segment.average_wage = segment.income / (segment.employed_amount + 1);
-        segment.spending = cost;
-        // Add taxes to spending as well...
-        auto [consumption_cost, taxes] = market.PurchaseFromMarket(consumption);
-        segment.income = segment.labor.labor_hours.MultiplyAndGetSum(market.price);
-        // Also add income taxes based off a percentage
-        // We assume people's income is uniform across stuff...
-        // What about graduated income taxes lol
-        wallet -= cost;  // Spend, even if it puts the pop into debt
-
-        market.production += segment.labor.labor_hours;
-        market.consumption += consumption;
-        total_sol += segment.standard_of_living * segment.population;
-        total_population += segment.population;
-        total_employed += segment.employed_amount;
+        ProcessSegment(node_segment, market);
     }
+}
+
+void SysPopulationConsumption::ProcessSegment(Node& node_segment, components::Market& market) {
+    ZoneScoped;
+    // Compute things
+    components::PopulationSegment& segment = node_segment.get_or_emplace<components::PopulationSegment>();
+    ResourceConsumption& consumption = node_segment.get_or_emplace<ResourceConsumption>();
+    // Compute what needs we have and do the math
+    // Reduce pop to some unreasonably low level so that the economy can
+    // handle it
+    const uint64_t population = segment.population;
+
+    consumption = autonomous_consumption_base;
+
+    // This value only changes when pop changes and
+    // should be calculated in SysPopulationGrowth
+    consumption *= population;
+
+    components::Wallet& wallet = node_segment.get_or_emplace<components::Wallet>();
+    double cost = (consumption * market.price).GetSum();
+
+    if (wallet > 0) {  // If the pop has cash left over spend it
+        // Add to the cost of price of transport
+        const ResourceConsumption& extraconsumption = marginal_propensity_base;
+
+        double extra_cost = (extraconsumption * market.price).GetSum();  // Distribute wallet amongst goods
+
+        extra_cost *= segment.standard_of_living;
+
+        // Now we should change the value that we do
+        // Also see if we have extra money and then we can adjust SOL or something like that
+        consumption += extraconsumption * segment.standard_of_living;  // Remove purchased goods from the market
+
+        // Consumption
+        // Check if there's enough on the market
+        // Add the transport costs, and because they're importing it, we only account this
+        cost += extra_cost;
+    }
+
+    // Our income should be equal to our spending...
+    UpdateStandardOfLiving(segment);
+    segment.average_wage = segment.income / (segment.employed_amount + 1);
+    segment.spending = cost;
+    // Add taxes to spending as well...
+    auto [consumption_cost, taxes] = market.PurchaseFromMarket(consumption);
+    segment.income = segment.labor.labor_hours.MultiplyAndGetSum(market.price);
+    // Also add income taxes based off a percentage
+    // We assume people's income is uniform across stuff...
+    // What about graduated income taxes lol
+    wallet -= cost;  // Spend, even if it puts the pop into debt
+
+    market.production += segment.labor.labor_hours;
+    market.consumption += consumption;
+    total_sol += segment.standard_of_living * segment.population;
+    total_population += segment.population;
+    total_employed += segment.employed_amount;
 }
 
 // In economics, the consumption function describes a relationship between
@@ -147,7 +141,7 @@ void SysPopulationConsumption::DoSystem() {
     total_sol = 0;
     total_employed = 0;
     for (Node settlement : universe.nodes<components::Settlement>()) {
-        ProcessSettlement(settlement, marginal_propensity_base, autonomous_consumption_base, savings);
+        ProcessSettlement(settlement);
     }
     // Now compute our thing
     auto& history = GetUniverse().ctx().at<components::PopulationHistory>();
@@ -156,6 +150,16 @@ void SysPopulationConsumption::DoSystem() {
     history.employment.push_back(total_employed);
     history.employment_rate.push_back(static_cast<double>(total_employed) / static_cast<double>(total_population) *
                                       100.);
+}
+
+void SysPopulationConsumption::UpdateStandardOfLiving(components::PopulationSegment& segment) {
+    double spending_ratio = (segment.income > 0) ? (segment.income - segment.spending) / segment.income : -1.0;
+
+    segment.sol_pid.Update(std::clamp(spending_ratio, -2.0, 2.0));
+
+    double sol_delta = 10 * segment.sol_pid.GetValue(components::PIDConfig {0.01, 0.1, 0.01});
+    sol_delta = std::clamp(sol_delta, -segment.standard_of_living * 0.1, segment.standard_of_living * 0.1);
+    segment.standard_of_living = std::max(segment.standard_of_living + sol_delta, 1.);
 }
 
 void SysPopulationConsumption::Init() {

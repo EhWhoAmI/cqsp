@@ -5,6 +5,9 @@
     price: 20.0
     volume: 1 m3
     mass: 1200 kg
+    needs: {
+      food: 0.5
+    }
     tags: [
       agricultural
     ]
@@ -15,6 +18,9 @@
     price: 30.0
     volume: 1 m3
     mass: 1300 kg
+    needs: {
+      food: 0.75
+    }
     tags: [
       agricultural
     ]
@@ -25,6 +31,9 @@
     price: 45.0
     volume: 1 m3
     mass: 1500 kg
+    needs: {
+      food: 0.8
+    }
     tags: [
       agricultural
     ]
@@ -35,6 +44,9 @@
     price: 45.0
     volume: 1 m3
     mass: 1500 kg
+    needs: {
+      food: 0.5
+    }
     tags: [
       agricultural
     ]
