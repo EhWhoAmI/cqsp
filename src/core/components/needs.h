@@ -32,5 +32,6 @@ struct Need {
     uint16_t minimum_desired;
     // Goods that can fulfill a certain need
     ResourceVector fulfillment_goods;
+    GoodEntity default_good;
 };
 }  // namespace cqsp::core::components

@@ -52,7 +52,7 @@ class HjsonLoader {
     double LoadDouble(const Hjson::Value& value, const std::string& name, double default_value = 0.);
     double RequiredDouble(const Hjson::Value& value, const std::string& name);
 
-    std::string LoadString(const Hjson::Value& value, const std::string& name, const std::string& default_value);
+    std::string LoadString(const Hjson::Value& value, const std::string& name, const std::string& default_value = "");
     std::string RequiredString(const Hjson::Value& value, const std::string& name);
 
     Hjson::Value LoadMap(const Hjson::Value& value, const std::string& name);

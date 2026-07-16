@@ -3,11 +3,29 @@
         identifier: food
         priority: 99
         minimum: 1
+        default: cereal_grains
+        goods:  [
+            {
+                good: cereal_grains
+                weight: 1
+            }
+            {
+                good: groceries
+                weight: 2
+            }
+        ]
     }
     {
         identifier: water
         priority: 100
         minimum: 1
+        default: water
+        goods:  [
+            {
+                good: water
+                weight: 1
+            }
+        ]
     }
     {
         identifier: fuel
@@ -18,10 +36,16 @@
         ]
         // Then how do we require things...
         priority: 90
+        default: gasoline
+        goods:  [
+            {
+                good: gasoline
+                weight: 1
+            }
+        ]
     }
-    {identifier: "household"}
-    {identifier: "entertainment"}
     {
         identifier: clothing
+        default: fabric
     }
 ]
