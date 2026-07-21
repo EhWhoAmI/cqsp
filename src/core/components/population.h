@@ -50,14 +50,6 @@ struct PopulationSegment {
     double saving_ratio = 0.1;
 
     double average_wage = 0;
-
-    // Then some consumption or something
-    // Then something something let's do the resource package
-    // Now let's add our spending amounts
-    // Then also figure out the distribution of consumption
-    // How much is provided for the different needs?
-    VectorMap<entt::entity, double> need_points;
-    VectorMap<entt::entity, ResourceVector> consumption;
 };
 
 struct Hunger {};

@@ -19,6 +19,7 @@
 #include <entt/entity/entity.hpp>
 
 #include "core/components/resourceledger.h"
+#include "core/components/vectormap.h"
 
 namespace cqsp::core::components {
 struct Need {
@@ -33,5 +34,10 @@ struct Need {
     // Goods that can fulfill a certain need
     ResourceVector fulfillment_goods;
     GoodEntity default_good;
+};
+
+struct PopulationConsumption {
+    VectorMap<entt::entity, double> needs;
+    VectorMap<entt::entity, ResourceVector> consumption;
 };
 }  // namespace cqsp::core::components

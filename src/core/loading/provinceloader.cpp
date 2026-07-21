@@ -277,11 +277,16 @@ Node ProvinceLoader::ParsePopulation(const Hjson::Value& population_hjson) {
     } else {
         SPDLOG_WARN("Pop doesn't have a job distribution");
     }
+    auto& consumption = pop_node.get<components::PopulationConsumption>();
 
-    for (entt::entity entity : universe.view<components::Need>()) {
-        segment.need_points[entity] = 1;
+    for (auto&& [entity, need] : universe.view<components::Need>().each()) {
+        consumption.needs[entity] = need.minimum;
+        auto& need_consmption = consumption.consumption[entity];
+
+        double points = need.fulfillment_goods[need.default_good];
+        need_consmption[need.default_good] = consumption.needs[entity] / points;
     }
- 
+
     segment.population = size;
     segment.labor_force = labor_force;
     segment.standard_of_living = standard_of_living;

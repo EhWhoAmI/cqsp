@@ -25,13 +25,14 @@
 #include "core/components/market.h"
 #include "core/components/population.h"
 #include "core/components/resource.h"
+#include "core/components/needs.h"
 #include "core/components/surface.h"
 
 namespace cqsp::core::systems {
 // Must be run after SysPopulationConsumption
 // This is because population growth is dependent on if consumption was
 // satisfied.
-using components::ResourceConsumption;
+using components::PopulationConsumption;
 
 void SysPopulationConsumption::ProcessSettlement(Node& settlement) {
     ZoneScoped;
@@ -55,46 +56,23 @@ void SysPopulationConsumption::ProcessSettlement(Node& settlement) {
 void SysPopulationConsumption::ProcessSegment(Node& node_segment, components::Market& market) {
     ZoneScoped;
     // Compute things
-    components::PopulationSegment& segment = node_segment.get_or_emplace<components::PopulationSegment>();
-    ResourceConsumption& consumption = node_segment.get_or_emplace<ResourceConsumption>();
+    components::PopulationSegment& segment = node_segment.get<components::PopulationSegment>();
+    PopulationConsumption& consumption = node_segment.get_or_emplace<PopulationConsumption>();
+    // So our standard of living is a linear relationship with the other things
     // Compute what needs we have and do the math
     // Reduce pop to some unreasonably low level so that the economy can
     // handle it
-    const uint64_t population = segment.population;
-
-    consumption = autonomous_consumption_base;
-
-    // This value only changes when pop changes and
-    // should be calculated in SysPopulationGrowth
-    consumption *= population;
-
     components::Wallet& wallet = node_segment.get_or_emplace<components::Wallet>();
-    double cost = (consumption * market.price).GetSum();
 
-    if (wallet > 0) {  // If the pop has cash left over spend it
-        // Add to the cost of price of transport
-        const ResourceConsumption& extraconsumption = marginal_propensity_base;
-
-        double extra_cost = (extraconsumption * market.price).GetSum();  // Distribute wallet amongst goods
-
-        extra_cost *= segment.standard_of_living;
-
-        // Now we should change the value that we do
-        // Also see if we have extra money and then we can adjust SOL or something like that
-        consumption += extraconsumption * segment.standard_of_living;  // Remove purchased goods from the market
-
-        // Consumption
-        // Check if there's enough on the market
-        // Add the transport costs, and because they're importing it, we only account this
-        cost += extra_cost;
-    }
+    double cost = 0;
+    // So our needs will need to be computed
 
     // Our income should be equal to our spending...
     UpdateStandardOfLiving(segment);
     segment.average_wage = segment.income / (segment.employed_amount + 1);
     segment.spending = cost;
     // Add taxes to spending as well...
-    auto [consumption_cost, taxes] = market.PurchaseFromMarket(consumption);
+    // auto [consumption_cost, taxes] = market.PurchaseFromMarket(consumption);
     segment.income = segment.labor.labor_hours.MultiplyAndGetSum(market.price);
     // Also add income taxes based off a percentage
     // We assume people's income is uniform across stuff...
@@ -102,7 +80,7 @@ void SysPopulationConsumption::ProcessSegment(Node& node_segment, components::Ma
     wallet -= cost;  // Spend, even if it puts the pop into debt
 
     market.production += segment.labor.labor_hours;
-    market.consumption += consumption;
+    // market.consumption += consumption;
     total_sol += segment.standard_of_living * segment.population;
     total_population += segment.population;
     total_employed += segment.employed_amount;
