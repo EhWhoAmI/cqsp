@@ -47,6 +47,7 @@
 #include "core/util/nameutil.h"
 #include "core/util/utilnumberdisplay.h"
 #include "engine/cqspgui.h"
+#include "core/components/needs.h"
 
 namespace cqsp::client::systems {
 
@@ -265,10 +266,33 @@ void SysProvinceInformation::DemographicsTab() {
             ImGui::TableSetupColumn("Need");
             ImGui::TableSetupColumn("Amount");
             ImGui::TableHeadersRow();
-            for (auto& [need, amount] : pop_segment.need_points) {
+            components::PopulationConsumption& consumption = GetUniverse().get<components::PopulationConsumption>(seg_entity);
+            for (auto& [need, amount] : consumption.needs) {
                 ImGui::TableNextRow();
                 ImGui::TableSetColumnIndex(0);
                 ImGui::TextFmt("{}", GetName(GetUniverse(), need));
+                ImGui::TableSetColumnIndex(1);
+                ImGui::TextFmt("{}", amount);
+            }
+            ImGui::EndTable();
+        }
+
+        // Then show all the consumption stats
+        if (ImGui::BeginTable("consumption_list", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+            ImGui::TableSetupColumn("Need");
+            ImGui::TableSetupColumn("Amount");
+            ImGui::TableHeadersRow();
+            components::PopulationConsumption& consumption = GetUniverse().get<components::PopulationConsumption>(seg_entity);
+            components::ResourceVector vec;
+            for (auto& [need, amount] : consumption.consumption) {
+                vec += amount;
+            }
+
+            for (auto& [good, amount] : vec) {
+                // Now compute our good amount
+                ImGui::TableNextRow();
+                ImGui::TableSetColumnIndex(0);
+                ImGui::TextFmt("{}", GetName(GetUniverse(), good));
                 ImGui::TableSetColumnIndex(1);
                 ImGui::TextFmt("{}", amount);
             }
@@ -289,20 +313,20 @@ void SysProvinceInformation::DemographicsTab() {
             if (ImGui::SmallButton((segment_prices) ? "Toggle Price" : "Toggle Count")) {
                 segment_prices = !segment_prices;
             }
-            if (GetUniverse().all_of<components::ResourceConsumption>(seg_entity)) {
+            if (GetUniverse().all_of<components::PopulationConsumption>(seg_entity)) {
                 const auto& market = GetUniverse().get<components::Market>(current_province);
-                auto& res_consumption = GetUniverse().get<components::ResourceConsumption>(seg_entity);
-                if (individual_prices) {
-                    DrawLedgerTable("Resource consumption", GetUniverse(), res_consumption, market);
-                    DrawLedgerPiePlot("Resource consumption pie chart", GetUniverse(), res_consumption, market,
-                                      segment_prices);
-                } else {
-                    DrawLedgerTable("Resource consumption", GetUniverse(),
-                                    res_consumption / static_cast<double>(pop_segment.population), market);
-                    DrawLedgerPiePlot("Resource consumption pie chart", GetUniverse(),
-                                      res_consumption / static_cast<double>(pop_segment.population), market,
-                                      segment_prices);
-                }
+                auto& res_consumption = GetUniverse().get<components::PopulationConsumption>(seg_entity);
+                //if (individual_prices) {
+                //    DrawLedgerTable("Resource consumption", GetUniverse(), res_consumption, market);
+                //    DrawLedgerPiePlot("Resource consumption pie chart", GetUniverse(), res_consumption, market,
+                //                      segment_prices);
+                //} else {
+                //    DrawLedgerTable("Resource consumption", GetUniverse(),
+                //                    res_consumption / static_cast<double>(pop_segment.population), market);
+                //    DrawLedgerPiePlot("Resource consumption pie chart", GetUniverse(),
+                //                      res_consumption / static_cast<double>(pop_segment.population), market,
+                //                      segment_prices);
+                //}
             }
         }
         ImGui::TextFmt("Education: {} (provides a bunch of boost to average efficiency)", pop_segment.education);

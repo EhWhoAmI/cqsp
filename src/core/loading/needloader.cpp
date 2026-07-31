@@ -26,6 +26,7 @@ bool NeedLoader::LoadValue(const Hjson::Value& values, Node& node) {
     universe.needs[identifier] = node.entity();
     auto& need = node.emplace<components::Need>();
     need.priority = LoadDouble(values, "priority", 0);
+    need.minimum = LoadDouble(values, "minimum", 0);
     std::string default_good = RequiredString(values, "default");
     if (universe.goods.contains(default_good)) {
         need.default_good = universe.good_map[universe.goods[default_good]];

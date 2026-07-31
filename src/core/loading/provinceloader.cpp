@@ -277,7 +277,7 @@ Node ProvinceLoader::ParsePopulation(const Hjson::Value& population_hjson) {
     } else {
         SPDLOG_WARN("Pop doesn't have a job distribution");
     }
-    auto& consumption = pop_node.get<components::PopulationConsumption>();
+    auto& consumption = pop_node.emplace<components::PopulationConsumption>();
 
     for (auto&& [entity, need] : universe.view<components::Need>().each()) {
         consumption.needs[entity] = need.minimum;

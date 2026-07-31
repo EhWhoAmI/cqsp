@@ -905,6 +905,13 @@ double& ResourceVector::operator[](const GoodEntity& good) {
     push_back({good, 0});
     return back().second;
 }
+
+void ResourceVector::operator+=(const ResourceVector& other) {
+    for (const auto val : other) {
+        (*this)[val.first] += val.second;
+    }
+}
+
 bool ResourceVector::contains(const GoodEntity &entity) const {
     return std::find_if(begin(), end(), [entity](const LedgerPair &_good) { return _good.first == entity; }) != end();
 }

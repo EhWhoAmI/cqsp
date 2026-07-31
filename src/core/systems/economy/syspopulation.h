@@ -33,8 +33,7 @@ class SysPopulationConsumption : public ISimulationSystem {
     void ProcessSettlement(Node& settlement);
     void ProcessSegment(Node& node_segment, components::Market& market);
     void UpdateStandardOfLiving(components::PopulationSegment& segment);
-    components::ResourceConsumption marginal_propensity_base;
-    components::ResourceConsumption autonomous_consumption_base;
+
     float savings = 0;
 
     int total_population = 0;

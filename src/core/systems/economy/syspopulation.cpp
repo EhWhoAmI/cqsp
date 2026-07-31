@@ -64,6 +64,12 @@ void SysPopulationConsumption::ProcessSegment(Node& node_segment, components::Ma
     // handle it
     components::Wallet& wallet = node_segment.get_or_emplace<components::Wallet>();
 
+    // So get our needs?
+    // then we should compute our need contribution
+    // So fill the needs and so on a and so forth
+    // Also look for good subsititution
+    // Fill our default goods or something..
+    // Then something?
     double cost = 0;
     // So our needs will need to be computed
 
@@ -143,8 +149,7 @@ void SysPopulationConsumption::UpdateStandardOfLiving(components::PopulationSegm
 void SysPopulationConsumption::Init() {
     for (entt::entity cgentity : GetUniverse().consumergoods) {
         const components::ConsumerGood& good = GetUniverse().get<components::ConsumerGood>(cgentity);
-        marginal_propensity_base[GetUniverse().good_map[cgentity]] = good.marginal_propensity * Interval();
-        autonomous_consumption_base[GetUniverse().good_map[cgentity]] = good.autonomous_consumption * Interval();
+
         savings -= good.marginal_propensity;
     }  // These tables technically never need to be recalculated
     GetUniverse().ctx().emplace<components::PopulationHistory>();

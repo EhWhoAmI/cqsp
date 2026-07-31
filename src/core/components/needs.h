@@ -27,7 +27,7 @@ struct Need {
     // How much priority this will get versus other needs, the higher the more
     // priority?
     uint16_t priority = 0;
-    // Minimum needed for like survival, everyone will try to hit that level
+    // Minimum needed for like survivalB, everyone will try to hit that level
     // maybe
     uint16_t minimum;
     uint16_t minimum_desired;

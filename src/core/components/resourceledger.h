@@ -246,6 +246,8 @@ class ResourceVector : public std::vector<std::pair<GoodEntity, double>> {
     ResourceVector operator+(const ResourceVector& other) const;
     ResourceVector operator*(const ResourceVector& other) const;
 
+    void operator+=(const ResourceVector& other);
+    
     /// <summary>
     /// Returns the average of all values in the ledger, with
     /// division by zero resulting in infiniy
